@@ -1,0 +1,4 @@
+You can download the source sw files from here:
+http://semantic-db.org/sw-examples/30k--wikivec.sw
+http://semantic-db.org/sw-examples/300k--wikivec.sw
+
