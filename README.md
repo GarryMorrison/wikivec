@@ -1,5 +1,5 @@
 # wikivec
-Wikivec demonstrates that there is semantic similarity encoded in the link structure of Wikipedia. It turns out that the incomming links to a wikipedia page are similar to other pages which share semantic similarity. Using our similarity measure we can exploit that similarity.
+Wikivec demonstrates that there is semantic similarity encoded in the link structure of Wikipedia. It turns out that the incomming links to a wikipedia page are similar to other pages which share semantic similarity. Using a similarity measure we can exploit that similarity.
 
 ## examples
 ```
@@ -187,6 +187,80 @@ pattern length: 64
 28  Red_deer    4.82
 29  Whale       4.76
 30  Raccoon     4.71
+
+Enter table row number, or wikipage: World_War_II
+----------------
+wikipage: World_War_II
+pattern: {294912, 5406723, ... , 5373949, 6553598}
+pattern length: 12589
+----------------
+1   World_War_II            100
+2   World_War_I             17.18
+3   Soviet_Union            10.74
+4   Nazi_Germany            9.22
+5   Germany                 8.81
+6   United_Kingdom          7.92
+7   France                  7.43
+8   United_States_Navy      6.95
+9   Cold_War                6.37
+10  United_States           6.02
+11  United_States_Army      6.01
+12  Japan                   5.93
+13  New_York_City           5.87
+14  Poland                  5.78
+15  The_New_York_Times      5.76
+16  Allies_of_World_War_II  5.72
+17  Italy                   5.63
+18  Vietnam_War             5.6
+19  American_Civil_War      5.44
+20  London                  5.43
+21  Russia                  5.28
+22  Adolf_Hitler            5.17
+23  Wikipedia:Persondata    5.15
+24  Great_Depression        5.04
+25  Korean_War              4.94
+26  Canada                  4.83
+27  Netherlands             4.66
+28  England                 4.62
+29  United_Nations          4.58
+30  Europe                  4.43
+
+Enter table row number, or wikipage: Australia
+----------------
+wikipage: Australia
+pattern: {753671, 8814617, ... , 16089084, 9994237}
+pattern length: 5613
+----------------
+1   Australia             100
+2   New_Zealand           19.69
+3   Canada                12.54
+4   United_Kingdom        11.72
+5   South_Africa          10.84
+6   New_South_Wales       10.33
+7   Sydney                10.15
+8   India                 9.86
+9   Japan                 9.28
+10  Brazil                9.04
+11  Melbourne             8.03
+12  Queensland            7.92
+13  Europe                7.59
+14  France                7.4
+15  Philippines           7.32
+16  China                 7.25
+17  Indonesia             7.21
+18  Germany               7.09
+19  Mexico                7.06
+20  Netherlands           7.05
+21  Italy                 6.89
+22  Argentina             6.8
+23  Spain                 6.55
+24  Singapore             6.51
+25  Russia                6.5
+26  Malaysia              6.41
+27  Victoria_(Australia)  6.28
+28  North_America         6.22
+29  Chile                 5.93
+30  Hong_Kong             5.88
 ```
 
 ## future
@@ -194,4 +268,5 @@ pattern length: 64
  * add the complete steps from wikipedia to links, to usable sw file
  
 ## related
-The sw file is a data format introduced in my [Semantic DB project](https://github.com/GarryMorrison/Semantic-DB/).
+ * data is here: [30k--wikivec.sw](http://semantic-db.org/sw-examples/30k--wikivec.sw) and [300k--wikivec.sw](http://semantic-db.org/sw-examples/300k--wikivec.sw).
+ * the sw file is a data format introduced in my [Semantic DB project](https://github.com/GarryMorrison/Semantic-DB/).
