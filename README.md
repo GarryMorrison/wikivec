@@ -393,8 +393,7 @@ wikivec |page M> => |c065af> + |7e957f>
 wikivec |page T> => |7e957f>
 ```
 Which is now exactly the form we need for our wikivec-similarity code. So, how are our page similarities calculated?
-We use the similarity measure: `simm(A, B) = |A intersection B| / |A union B|`
-Then compare the patterns for each page, and return the top 30 results in a clean table.
+We compare the patterns for each page using the similarity measure: `simm(A, B) = |A intersection B| / |A union B|`, and return the top 30 results in a clean table.
 
 ## future
  * write a C++ version
