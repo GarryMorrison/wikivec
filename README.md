@@ -276,7 +276,7 @@ links |page C> => |page Z> + |page Q> + |page A>
 links |page D> => |page X> + |page B> + |page N> + |page M>
 links |page E> => |page Y> + |page X> + |page S> + |page T> + |page N> + |page M>
 ```
-Noting that are notation has the advantage of being sparse, so we don't need giant matrices to represent the link structure.
+Noting that our notation has the advantage of being sparse, so we don't need giant matrices to represent the link structure.
 Next, find the inverse links. That is, links that are comming into a page:
 ```
 sa: find-inverse[links]
