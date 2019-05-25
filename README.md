@@ -263,6 +263,139 @@ pattern length: 5613
 30  Hong_Kong             5.88
 ```
 
+## algorithm
+Short summary of the algorithm: we find the outgoing links from wikipedia pages, use that to find the incomming links, hash those, and use them as patterns which we compare using a similarity measure. And remarkably it emerges that pages have semantic similarity, that is somehow baked in to the link structure of wikipedia as a whole. Further, we only need a small subset of wikipedia for this to work. The [30k--wikivec.sw](http://semantic-db.org/sw-examples/30k--wikivec.sw) file was constructed from only 30,000 wikipedia pages, resulting in 1,296,086 wikivec learn rules, and the [300k--wikivec.sw](http://semantic-db.org/sw-examples/300k--wikivec.sw) file was constructed from 300,000 wikipedia pages, resulting in 4,272,182 wikivec learn rules.
+
+Longer explanation of the algorithm: first we extract the outgoing link structure of wikipedia pages, and convert that to mumble/sw notation. (see the [Semantic DB project](https://github.com/GarryMorrison/Semantic-DB/))
+Let's say page A links to page X, Y and Z, then in sw notation we have:
+`links |page A> => |page X> + |page Y> + |page Z>`  
+Consider a few more pages:
+```
+links |page B> => |page Y> + |page P> + |page Q> + |page D> + |page S>
+links |page C> => |page Z> + |page Q> + |page A>
+links |page D> => |page X> + |page B> + |page N> + |page M>
+links |page E> => |page Y> + |page X> + |page S> + |page T> + |page N> + |page M>
+```
+Noting that are notation has the advantage of being sparse, so we don't need giant matrices to represent the link structure.
+Next, find the inverse links. That is, links that are comming into a page:
+```
+sa: find-inverse[links]
+
+-- show what we now know:
+sa: dump
+
+----------------------------------------
+ |context> => |context: wikivec algorithm>
+previous |context> => |context: global context>
+
+links |page A> => |page X> + |page Y> + |page Z>
+inverse-links |page A> => |page C>
+
+links |page B> => |page Y> + |page P> + |page Q> + |page D> + |page S>
+inverse-links |page B> => |page D>
+
+links |page C> => |page Z> + |page Q> + |page A>
+
+links |page D> => |page X> + |page B> + |page N> + |page M>
+inverse-links |page D> => |page B>
+
+links |page E> => |page Y> + |page X> + |page S> + |page T> + |page N> + |page M>
+
+inverse-links |page X> => |page A> + |page D> + |page E>
+
+inverse-links |page Y> => |page A> + |page B> + |page E>
+
+inverse-links |page Z> => |page A> + |page C>
+
+inverse-links |page P> => |page B>
+
+inverse-links |page Q> => |page B> + |page C>
+
+inverse-links |page S> => |page B> + |page E>
+
+inverse-links |page N> => |page D> + |page E>
+
+inverse-links |page M> => |page D> + |page E>
+
+inverse-links |page T> => |page E>
+----------------------------------------
+```
+Tidy up by hashing the kets in the superpositions:
+```
+sa: hash-inverse-links |*> #=> ket-hash[6] inverse-links |_self>
+sa: map[hash-inverse-links, wikivec] rel-kets[inverse-links]
+sa: dump
+
+----------------------------------------
+ |context> => |context: wikivec algorithm>
+previous |context> => |context: global context>
+
+links |page A> => |page X> + |page Y> + |page Z>
+inverse-links |page A> => |page C>
+wikivec |page A> => |3fe0fa>
+
+links |page B> => |page Y> + |page P> + |page Q> + |page D> + |page S>
+inverse-links |page B> => |page D>
+wikivec |page B> => |c065af>
+
+links |page C> => |page Z> + |page Q> + |page A>
+
+links |page D> => |page X> + |page B> + |page N> + |page M>
+inverse-links |page D> => |page B>
+wikivec |page D> => |46055b>
+
+links |page E> => |page Y> + |page X> + |page S> + |page T> + |page N> + |page M>
+
+inverse-links |page X> => |page A> + |page D> + |page E>
+wikivec |page X> => |532631> + |c065af> + |7e957f>
+
+inverse-links |page Y> => |page A> + |page B> + |page E>
+wikivec |page Y> => |532631> + |46055b> + |7e957f>
+
+inverse-links |page Z> => |page A> + |page C>
+wikivec |page Z> => |532631> + |3fe0fa>
+
+inverse-links |page P> => |page B>
+wikivec |page P> => |46055b>
+
+inverse-links |page Q> => |page B> + |page C>
+wikivec |page Q> => |46055b> + |3fe0fa>
+
+inverse-links |page S> => |page B> + |page E>
+wikivec |page S> => |46055b> + |7e957f>
+
+inverse-links |page N> => |page D> + |page E>
+wikivec |page N> => |c065af> + |7e957f>
+
+inverse-links |page M> => |page D> + |page E>
+wikivec |page M> => |c065af> + |7e957f>
+
+inverse-links |page T> => |page E>
+wikivec |page T> => |7e957f>
+
+hash-inverse-links |*> #=> ket-hash[6] inverse-links |_self>
+
+----------------------------------------
+```
+Then filter down to only wikivec learn rules and we are left with:
+```
+wikivec |page A> => |3fe0fa>
+wikivec |page B> => |c065af>
+wikivec |page D> => |46055b>
+wikivec |page X> => |532631> + |c065af> + |7e957f>
+wikivec |page Y> => |532631> + |46055b> + |7e957f>
+wikivec |page Z> => |532631> + |3fe0fa>
+wikivec |page P> => |46055b>
+wikivec |page Q> => |46055b> + |3fe0fa>
+wikivec |page S> => |46055b> + |7e957f>
+wikivec |page N> => |c065af> + |7e957f>
+wikivec |page M> => |c065af> + |7e957f>
+wikivec |page T> => |7e957f>
+```
+Which is now exactly the form we need for our wikivec-similarity code. So, how are our page similarities calculated?
+We use the similarity measure: `simm(A, B) = |A intersection B| / |A union B|`
+Then compare the patterns for each page, and return the top 30 results in a clean table.
+
 ## future
  * write a C++ version
  * add the complete steps from wikipedia to links, to usable sw file
