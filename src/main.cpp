@@ -8,6 +8,16 @@
 
 typedef unsigned long ulong;
 
+// define some settings:
+const std::string op = "wikivec";
+const std::string source = "sw/small.sw";
+// const std::string source = "sw/30k--wikivec.sw";
+// const std::string source = "sw/300k--wikivec.sw";
+const bool interactive = true;
+// const bool interactive = false;
+
+
+
 std::vector<std::string> split(const std::string& s, const std::string& delimiter) {
     std::vector<std::string> result;
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
@@ -93,15 +103,6 @@ int main(int argc, char* argv[]) {
     }
     std::cout << "wikipage: " << wikipage << std::endl;
     std::cout << "number of results to show: " << number_of_results << std::endl;
-
-    // define some settings:
-    // maybe we should shift these to the top of the file?
-    std::string op = "wikivec";
-    std::string source = "sw/small.sw";
-    // std::string source = "sw/30k--wikivec.sw";
-    // std::string source = "sw/300k--wikivec.sw";
-    bool interactive = true;
-    // bool interactive = false;
 
 
     // load the sw file:
