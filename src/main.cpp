@@ -11,9 +11,9 @@ typedef unsigned long ulong;
 
 // define some settings:
 const std::string op = "wikivec";
-const std::string source = "sw/small.sw";
+// const std::string source = "sw/small.sw";
 // const std::string source = "sw/30k--wikivec.sw";
-// const std::string source = "sw/300k--wikivec.sw";
+const std::string source = "sw/300k--wikivec.sw";
 const bool interactive = true;
 // const bool interactive = false;
 
@@ -33,9 +33,45 @@ std::vector<std::string> split(const std::string& s, const std::string& delimite
     return result;
 }
 
+std::map<std::string, std::set<ulong> > load_sw(const std::string filename, const std::string op) {
+    std::map<std::string, std::set<ulong> > result;
+    std::string op_head = op + " |";
+    size_t op_head_length = op_head.length();
+
+    std::string line;
+    std::ifstream infile;
+    infile.open(filename);
+    while(std::getline(infile, line)) {
+        if (line.rfind(op_head, 0) == 0) {
+            size_t break_pos = line.find("> => ");
+            std::string label = line.substr(op_head_length, break_pos - op_head_length);
+            std::string tail = line.substr(break_pos + 6, line.size() - break_pos - 7);
+
+            std::set<ulong> set_tail;
+            size_t pos_start = 0, pos_end, delim_len = 5;
+            while ((pos_end = tail.find("> + |", pos_start)) != std::string::npos) {
+                std::string token = tail.substr(pos_start, pos_end - pos_start);
+                pos_start = pos_end + delim_len;
+                ulong value = std::stoul(token, nullptr, 16);
+                set_tail.insert(value);
+            }
+            std::string token = tail.substr(pos_start);
+            ulong value = std::stoul(token, nullptr, 16);
+            set_tail.insert(value);
+
+            result.insert(std::make_pair(label, set_tail));
+
+            // std::cout << "line: " << line << std::endl;
+            // std::cout << "label: " << label << std::endl;
+            // std::cout << "tail: " << tail << std::endl;
+        }
+    }
+    infile.close();
+    return result;
+}
 
 // assumes a well constructed sw file!
-std::map<std::string, std::set<ulong> > load_sw(const std::string filename, const std::string op) {
+std::map<std::string, std::set<ulong> > first_load_sw(const std::string filename, const std::string op) {
     std::map<std::string, std::set<ulong> > result;
     std::string op_head = op + " |";
     std::string label;
@@ -47,24 +83,28 @@ std::map<std::string, std::set<ulong> > load_sw(const std::string filename, cons
     infile.open(filename);
     while(std::getline(infile, line)) {
         if (line.rfind(op_head, 0) == 0) {
-            line.erase(0, op_head.length());
+            // line.erase(0, op_head.length());
             size_t break_pos = line.find("> => ");
-            label = line.substr(0, break_pos);
+            // label = line.substr(0, break_pos);
+            label = line.substr(op_head.length(), break_pos);
             tail = line.substr(break_pos + 5);
-            split_tail = split(tail, " + ");
+            // split_tail = split(tail, " + ");
+            tail = tail.substr(1, tail.size() - 2);
+            split_tail = split(tail, "> + |");
 
             std::set<ulong> set_tail;
             for (auto const &ket: split_tail) {
-                auto hex_ket = ket.substr(1, ket.size() - 2);  // crashes if ket.size() < 2
+                // auto hex_ket = ket.substr(1, ket.size() - 2);  // crashes if ket.size() < 2
                 std::stringstream ss;
                 ulong value;
-                ss << std::hex << hex_ket;
+                // ss << std::hex << hex_ket;
+                ss << std::hex << ket;
                 ss >> value;
                 set_tail.insert(value);
             }
             result.insert(std::make_pair(label, set_tail));
 
-            std::cout << "line: " << line << std::endl;
+            // std::cout << "line: " << line << std::endl;
             // std::cout << "label: " << label << std::endl;
             // std::cout << "tail: " << tail << std::endl;
         }
@@ -130,7 +170,8 @@ int main(int argc, char* argv[]) {
     auto sw_map = load_sw(source, op);
 
     // test it loads:
-    print_sw_map(sw_map);
+    // print_sw_map(sw_map);
+    return 0;
 
     // test set intersection:
     std::set<ulong> one, two, the_intersection, the_union;
