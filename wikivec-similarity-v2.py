@@ -42,8 +42,8 @@ if len(sys.argv) == 3:
 
 op = "wikivec"
 
-source = "sw/30k--wikivec.sw"
-# source = "sw/300k--wikivec.sw"
+# source = "sw/30k--wikivec.sw"
+source = "sw/300k--wikivec.sw"
 
 
 interactive = True
