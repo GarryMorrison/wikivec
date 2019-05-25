@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 typedef unsigned long ulong;
 
@@ -86,6 +87,26 @@ void print_sw_map(std::map<std::string, std::set<ulong> > &sw_map) {
     }
 }
 
+std::set<ulong> find_intersection(const std::set<ulong> &one, const std::set<ulong> &two) {
+    std::set<ulong> result;
+    set_intersection(one.begin(), one.end(), two.begin(), two.end(), std::inserter(result, result.begin()));
+    return result;
+}
+
+std::set<ulong> find_union(const std::set<ulong> &one, const std::set<ulong> &two) {
+    std::set<ulong> result;
+    set_union(one.begin(), one.end(), two.begin(), two.end(), std::inserter(result, result.begin()));
+    return result;
+}
+
+float simm(const std::set<ulong> &one, const std::set<ulong> &two) {
+    auto the_union = find_union(one, two);
+    auto the_intersection = find_intersection(one, two);
+    if (the_union.size() == 0) { return 0.0; }
+    return (float)the_intersection.size() / (float)the_union.size();
+}
+
+
 int main(int argc, char* argv[]) {
     // first process our command line arguments:
     if (argc < 2 || argc > 3) {
@@ -110,6 +131,30 @@ int main(int argc, char* argv[]) {
 
     // test it loads:
     print_sw_map(sw_map);
+
+    // test set intersection:
+    std::set<ulong> one, two, the_intersection, the_union;
+    one.insert(5);
+    one.insert(10);
+    one.insert(15);
+    one.insert(20);
+    two.insert(10);
+    two.insert(20);
+    two.insert(25);
+
+    the_intersection = find_intersection(one, two);
+    for (auto const number: the_intersection) {
+        std::cout << number << " ";
+    }
+    std::cout << std::endl;
+
+    the_union = find_union(one, two);
+    for (auto const number: the_union) {
+        std::cout << number << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "simm: " << simm(one, two) << std::endl;
 
     return 0;
 }
