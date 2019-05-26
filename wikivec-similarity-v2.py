@@ -42,12 +42,12 @@ if len(sys.argv) == 3:
 
 op = "wikivec"
 
-# source = "sw/30k--wikivec.sw"
-source = "sw/300k--wikivec.sw"
+source = "sw/30k--wikivec.sw"
+# source = "sw/300k--wikivec.sw"
 
 
-interactive = True
-# interactive = False
+# interactive = True
+interactive = False
 
 def load_clean_sw_into_set_dict(filename, op):
   op_head = op + " |"

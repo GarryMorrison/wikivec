@@ -12,8 +12,8 @@ typedef unsigned long ulong;
 // define some settings:
 const std::string op = "wikivec";
 // const std::string source = "sw/small.sw";
-// const std::string source = "sw/30k--wikivec.sw";
-const std::string source = "sw/300k--wikivec.sw";
+const std::string source = "sw/30k--wikivec.sw";
+// const std::string source = "sw/300k--wikivec.sw";
 const bool interactive = true;
 // const bool interactive = false;
 
@@ -139,13 +139,61 @@ std::set<ulong> find_union(const std::set<ulong> &one, const std::set<ulong> &tw
     return result;
 }
 
-float simm(const std::set<ulong> &one, const std::set<ulong> &two) {
-    auto the_union = find_union(one, two);
-    auto the_intersection = find_intersection(one, two);
-    if (the_union.size() == 0) { return 0.0; }
-    return (float)the_intersection.size() / (float)the_union.size();
+ulong find_intersection_size(const std::set<ulong> &one, const std::set<ulong> &two) {
+    std::set<ulong> result;
+    set_intersection(one.begin(), one.end(), two.begin(), two.end(), std::inserter(result, result.begin()));
+    return result.size();
 }
 
+ulong find_union_size(const std::set<ulong> &one, const std::set<ulong> &two) {
+    std::set<ulong> result;
+    set_union(one.begin(), one.end(), two.begin(), two.end(), std::inserter(result, result.begin()));
+    return result.size();
+}
+
+float simm(const std::set<ulong> &one, const std::set<ulong> &two) {
+    ulong union_size = find_union_size(one, two);
+    ulong intersection_size = find_intersection_size(one, two);
+    if (union_size == 0) { return 0.0; }
+    return (float)intersection_size / (float)union_size;
+}
+
+std::vector<std::pair<float, std::string> > pattern_recognition(const std::map<std::string, std::set<ulong> > &sw_map, const std::set<ulong> &pattern, ulong number_of_results) {
+    std::vector<std::pair<float, std::string> > result;
+    for (auto const & pair: sw_map) {
+        float value = simm(pattern, pair.second);
+        if (value > 0) {
+            result.push_back(std::make_pair(value, pair.first));
+        }
+    }    
+    std::sort(result.rbegin(), result.rend());
+    result.resize(number_of_results);
+    return result;
+}
+
+void print_wikivec_similarity(const std::map<std::string, std::set<ulong> > &sw_map, const std::string &wikipage, int number_of_results) {
+    // test wikipage is in sw_map:
+    if (sw_map.find(wikipage) == sw_map.end()) {
+        std::cout << wikipage << " not in dictionary" << std::endl;
+        return;
+    }
+
+    // print details header:
+    std::cout << "----------------" << std::endl;
+    auto pattern = sw_map.at(wikipage);
+    std::cout << "wikipage: " << wikipage << std::endl;
+    std::cout << "pattern: {";
+    for (const auto ket: pattern) {
+        std::cout << ket << ", ";
+    }
+    std::cout << "}" << std::endl;
+    std::cout << "pattern length: " << pattern.size() << std::endl;
+    std::cout << "----------------" << std::endl;
+
+    // find matching patterns:
+    auto result = pattern_recognition(sw_map, pattern, number_of_results);
+    std::cout << "result size: " << result.size() << std::endl;
+}
 
 int main(int argc, char* argv[]) {
     // first process our command line arguments:
@@ -171,7 +219,7 @@ int main(int argc, char* argv[]) {
 
     // test it loads:
     // print_sw_map(sw_map);
-    return 0;
+    // return 0;
 
     // test set intersection:
     std::set<ulong> one, two, the_intersection, the_union;
@@ -196,6 +244,18 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
 
     std::cout << "simm: " << simm(one, two) << std::endl;
+
+
+    // test sorting of results:
+    std::vector<std::pair<float, std::string>> vec;
+    vec = {{2.5, "e"}, {1.7, "d"}, {3, "c"}, {9, "b"}, {0.1, "a"}};
+    std::sort(vec.rbegin(), vec.rend());
+    for (auto x: vec) {
+        std::cout << x.first << " " << x.second << std::endl;
+    }
+
+    // 
+    print_wikivec_similarity(sw_map, wikipage, number_of_results);
 
     return 0;
 }
