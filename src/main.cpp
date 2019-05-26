@@ -226,8 +226,8 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     }
-    std::cout << "wikipage: " << wikipage << std::endl;
-    std::cout << "number of results to show: " << number_of_results << std::endl;
+    // std::cout << "wikipage: " << wikipage << std::endl;
+    // std::cout << "number of results to show: " << number_of_results << std::endl;
 
 
     // load the sw file:
@@ -236,39 +236,6 @@ int main(int argc, char* argv[]) {
     // test it loads:
     // print_sw_map(sw_map);
     // return 0;
-
-    // test set intersection:
-    std::set<ulong> one, two, the_intersection, the_union;
-    one.insert(5);
-    one.insert(10);
-    one.insert(15);
-    one.insert(20);
-    two.insert(10);
-    two.insert(20);
-    two.insert(25);
-
-    the_intersection = find_intersection(one, two);
-    for (auto const number: the_intersection) {
-        std::cout << number << " ";
-    }
-    std::cout << std::endl;
-
-    the_union = find_union(one, two);
-    for (auto const number: the_union) {
-        std::cout << number << " ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "simm: " << simm(one, two) << std::endl;
-
-
-    // test sorting of results:
-    std::vector<std::pair<float, std::string>> vec;
-    vec = {{2.5, "e"}, {1.7, "d"}, {3, "c"}, {9, "b"}, {0.1, "a"}};
-    std::sort(vec.rbegin(), vec.rend());
-    for (auto x: vec) {
-        std::cout << x.first << " " << x.second << std::endl;
-    }
 
     // find and print out wikivec similarity:
     auto result = print_wikivec_similarity(sw_map, wikipage, number_of_results);
