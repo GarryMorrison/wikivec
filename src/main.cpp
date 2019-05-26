@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <iomanip>
 
 typedef unsigned long ulong;
 
@@ -192,7 +193,19 @@ void print_wikivec_similarity(const std::map<std::string, std::set<ulong> > &sw_
 
     // find matching patterns:
     auto result = pattern_recognition(sw_map, pattern, number_of_results);
-    std::cout << "result size: " << result.size() << std::endl;
+
+    // print out a table of results:
+    // std::cout << "result size: " << result.size() << std::endl;
+    int max_width = 0;
+    for (const auto x: result) {
+        max_width = std::max(max_width, (int)x.second.size());
+    }
+
+    int k = 1;
+    for (const auto x: result) {
+        std::cout << std::left << std::setw(4) << k << std::left << std::setw(max_width + 1) << x.second << " " << (int)(10000.0 * x.first)/100.0 << std::endl;
+        k++;
+    }
 }
 
 int main(int argc, char* argv[]) {
