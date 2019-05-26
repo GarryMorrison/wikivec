@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <iomanip>
 
-typedef unsigned long ulong;
 
 // define some settings:
 const std::string op = "wikivec";
@@ -18,6 +17,8 @@ const std::string source = "sw/30k--wikivec.sw";
 const bool interactive = true;
 // const bool interactive = false;
 
+
+typedef unsigned long ulong;
 
 
 std::vector<std::string> split(const std::string& s, const std::string& delimiter) {
@@ -42,6 +43,10 @@ std::map<std::string, std::set<ulong> > load_sw(const std::string filename, cons
     std::string line;
     std::ifstream infile;
     infile.open(filename);
+    if (!infile.is_open()) {
+        std::cerr << "Failed to load file: " << filename << std::endl;
+        std::_Exit(0);
+    }
     while(std::getline(infile, line)) {
         if (line.rfind(op_head, 0) == 0) {
             size_t break_pos = line.find("> => ");
@@ -201,7 +206,6 @@ std::vector<std::pair<float, std::string> > print_wikivec_similarity(const std::
     for (const auto x: result) {
         max_width = std::max(max_width, (int)x.second.size());
     }
-
     int k = 1;
     for (const auto x: result) {
         std::cout << std::left << std::setw(4) << k << std::left << std::setw(max_width + 1) << x.second << " " << (int)(10000.0 * x.first)/100.0 << std::endl;
