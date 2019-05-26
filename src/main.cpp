@@ -172,11 +172,12 @@ std::vector<std::pair<float, std::string> > pattern_recognition(const std::map<s
     return result;
 }
 
-void print_wikivec_similarity(const std::map<std::string, std::set<ulong> > &sw_map, const std::string &wikipage, int number_of_results) {
+std::vector<std::pair<float, std::string> > print_wikivec_similarity(const std::map<std::string, std::set<ulong> > &sw_map, const std::string &wikipage, int number_of_results) {
     // test wikipage is in sw_map:
     if (sw_map.find(wikipage) == sw_map.end()) {
         std::cout << wikipage << " not in dictionary" << std::endl;
-        return;
+        std::vector<std::pair<float, std::string> > empty;
+        return empty;
     }
 
     // print details header:
@@ -206,6 +207,8 @@ void print_wikivec_similarity(const std::map<std::string, std::set<ulong> > &sw_
         std::cout << std::left << std::setw(4) << k << std::left << std::setw(max_width + 1) << x.second << " " << (int)(10000.0 * x.first)/100.0 << std::endl;
         k++;
     }
+    std::cout << std::endl;
+    return result;
 }
 
 int main(int argc, char* argv[]) {
@@ -267,8 +270,38 @@ int main(int argc, char* argv[]) {
         std::cout << x.first << " " << x.second << std::endl;
     }
 
-    // 
-    print_wikivec_similarity(sw_map, wikipage, number_of_results);
+    // find and print out wikivec similarity:
+    auto result = print_wikivec_similarity(sw_map, wikipage, number_of_results);
+
+    // if interactive then prompt for more wikipages:
+    if (interactive) {
+        while(true) {
+            std::string input;
+            std::cout << "Enter table row number, or wikipage: ";
+            std::getline(std::cin, input);
+
+            // check for empty input:
+            if (input.size() == 0) { continue; }
+
+            // exit the agent:
+            if (input == "q") { return 0; }
+
+            // get next page to run similarity on:
+            try {
+                int line = std::stoi(input, nullptr, 10) - 1;
+                if (line < 0 || line >= number_of_results) {
+                    line = 0;
+                }
+                wikipage = result[line].second;
+            }
+            catch ( std::invalid_argument ) {
+                wikipage = input;
+            }
+
+            // find and print out wikivec similarity:
+            result = print_wikivec_similarity(sw_map, wikipage, number_of_results);
+        }
+    }
 
     return 0;
 }
