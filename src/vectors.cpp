@@ -51,6 +51,21 @@ std::map<std::string, std::vector<ulong> > load_sw_vec(const std::string filenam
     return result;
 }
 
+void print_sw_map(std::map<std::string, std::vector<ulong> > &sw_map) {
+    std::cout << "sw map: " << std::endl;
+    for (auto const & rule: sw_map) {
+        std::cout << "wikivec |" << rule.first << "> => |";
+        auto it = rule.second.begin();
+        std::cout << *it++;
+        for (; it != rule.second.end(); it++) {
+            std::cout << "> + |";
+            std::cout << *it;
+        }
+        std::cout << ">" << std::endl;
+    }
+}
+
+
 
 // code for intersection from here:
 // https://leetcode.com/problems/intersection-of-two-arrays/discuss/266901/C%2B%2B-beats-100.
