@@ -17,8 +17,8 @@ const std::string source = "sw/30k--wikivec.sw";
 
 // only learn patterns that have at least this many kets:
 // set to 1 to learn everything
-// larger this is, the faster the result, but at potential cost of not being able to find similarity for rare pages
-const size_t min_learn_rule_size = 4;
+// larger this is, the faster the result, but at potential cost of not being able to find correct similarity for rare pages
+const size_t min_learn_rule_size = 3;
 
 // only keep similarity results with at least this similarity measure:
 // eg, 0.01 means keep results better than 1%
@@ -27,8 +27,8 @@ const size_t min_learn_rule_size = 4;
 const float min_similarity = 0.01;
 
 // switch interactive mode on or off:
-// const bool interactive = true;
-const bool interactive = false;
+const bool interactive = true;
+// const bool interactive = false;
 
 
 int main(int argc, char* argv[]) {
