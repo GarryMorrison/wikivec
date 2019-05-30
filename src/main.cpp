@@ -20,6 +20,12 @@ const std::string source = "sw/30k--wikivec.sw";
 // larger this is, the faster the result, but at potential cost of not being able to find similarity for rare pages
 const size_t min_learn_rule_size = 4;
 
+// only keep similarity results with at least this similarity measure:
+// eg, 0.01 means keep results better than 1%
+// const float min_similarity = 0.0;
+// const float min_similarity = 0.005;
+const float min_similarity = 0.01;
+
 // switch interactive mode on or off:
 // const bool interactive = true;
 const bool interactive = false;
@@ -54,7 +60,7 @@ int main(int argc, char* argv[]) {
 
 
     // find and print out wikivec similarity:
-    auto result = print_wikivec_similarity(sw_map, wikipage, number_of_results);
+    auto result = print_wikivec_similarity(sw_map, wikipage, number_of_results, min_similarity);
 
     // if interactive then prompt for more wikipages:
     if (interactive) {
@@ -82,7 +88,7 @@ int main(int argc, char* argv[]) {
             }
 
             // find and print out wikivec similarity:
-            result = print_wikivec_similarity(sw_map, wikipage, number_of_results);
+            result = print_wikivec_similarity(sw_map, wikipage, number_of_results, min_similarity);
         }
     }
 

@@ -151,11 +151,11 @@ float simm(const std::set<ulong> &one, const std::set<ulong> &two) {
     return (float)intersection_size / (float)union_size;
 }
 
-std::vector<std::pair<float, std::string> > pattern_recognition(const std::map<std::string, std::set<ulong> > &sw_map, const std::set<ulong> &pattern, ulong number_of_results) {
+std::vector<std::pair<float, std::string> > pattern_recognition(const std::map<std::string, std::set<ulong> > &sw_map, const std::set<ulong> &pattern, ulong number_of_results, float min_similarity) {
     std::vector<std::pair<float, std::string> > result;
     for (auto const & pair: sw_map) {
         float value = simm(pattern, pair.second);
-        if (value > 0) {
+        if (value > min_similarity) {
             result.push_back(std::make_pair(value, pair.first));
         }
     }
@@ -165,7 +165,7 @@ std::vector<std::pair<float, std::string> > pattern_recognition(const std::map<s
 }
 
 
-std::vector<std::pair<float, std::string> > print_wikivec_similarity(const std::map<std::string, std::set<ulong> > &sw_map, const std::string &wikipage, int number_of_results) {
+std::vector<std::pair<float, std::string> > print_wikivec_similarity(const std::map<std::string, std::set<ulong> > &sw_map, const std::string &wikipage, int number_of_results, float min_similarity) {
     // test wikipage is in sw_map:
     if (sw_map.find(wikipage) == sw_map.end()) {
         std::cout << wikipage << " not in dictionary" << std::endl;
@@ -186,7 +186,7 @@ std::vector<std::pair<float, std::string> > print_wikivec_similarity(const std::
     std::cout << "----------------" << std::endl;
 
     // find matching patterns:
-    auto result = pattern_recognition(sw_map, pattern, number_of_results);
+    auto result = pattern_recognition(sw_map, pattern, number_of_results, min_similarity);
 
     // print out a table of results:
     // std::cout << "result size: " << result.size() << std::endl;
