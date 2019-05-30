@@ -1,13 +1,6 @@
-#include <map>
-#include <set>
-#include <unordered_set>
-#include <vector>
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <sstream>
-#include <algorithm>
-#include <iomanip>
 #include "sets.h"
 #include "vectors.h"
 
@@ -47,19 +40,6 @@ int main(int argc, char* argv[]) {
     // test it loads:
     // print_sw_map(sw_map);
     // return 0;
-
-    // test vector union_size and intersection_size:
-    std::vector<ulong> alpha, beta;
-    alpha.push_back(5);
-    alpha.push_back(10);
-    alpha.push_back(15);
-    alpha.push_back(20);
-    beta.push_back(15);
-    beta.push_back(5);
-    beta.push_back(25);
-    std::cout << "alpha intn beta: " << find_intersection_size(alpha, beta) << std::endl;
-    std::cout << "alpha union beta: " << find_union_size(alpha, beta) << std::endl;
-    // return 0;    
 
 
     // find and print out wikivec similarity:
