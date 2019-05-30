@@ -20,7 +20,7 @@ std::vector<std::string> split(const std::string& s, const std::string& delimite
     return result;
 }
 
-std::map<std::string, std::set<ulong> > load_sw_set(const std::string filename, const std::string op) {
+std::map<std::string, std::set<ulong> > load_sw_set(const std::string filename, const std::string op, size_t min_learn_rule_size) {
     std::map<std::string, std::set<ulong> > result;
     std::string op_head = op + " |";
     size_t op_head_length = op_head.length();
@@ -50,7 +50,9 @@ std::map<std::string, std::set<ulong> > load_sw_set(const std::string filename, 
             ulong value = std::stoul(token, nullptr, 16);
             set_tail.insert(value);
 
-            result.insert(std::make_pair(label, set_tail));
+            if (set_tail.size() >= min_learn_rule_size) {
+                result.insert(std::make_pair(label, set_tail));
+            }
 
             // std::cout << "line: " << line << std::endl;
             // std::cout << "label: " << label << std::endl;

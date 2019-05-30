@@ -10,7 +10,7 @@
 
 
 
-std::map<std::string, std::vector<ulong> > load_sw_vec(const std::string filename, const std::string op) {
+std::map<std::string, std::vector<ulong> > load_sw_vec(const std::string filename, const std::string op, size_t min_learn_rule_size) {
     std::map<std::string, std::vector<ulong> > result;
     std::string op_head = op + " |";
     size_t op_head_length = op_head.length();
@@ -40,7 +40,9 @@ std::map<std::string, std::vector<ulong> > load_sw_vec(const std::string filenam
             ulong value = std::stoul(token, nullptr, 16);
             vec_tail.push_back(value);
 
-            result.insert(std::make_pair(label, vec_tail));
+            if (vec_tail.size() >= min_learn_rule_size) {
+                result.insert(std::make_pair(label, vec_tail));
+            }
 
             // std::cout << "line: " << line << std::endl;
             // std::cout << "label: " << label << std::endl;

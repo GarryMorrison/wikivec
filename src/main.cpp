@@ -6,10 +6,21 @@
 
 
 // define some settings:
+
+// the operator to extract from the data file:
 const std::string op = "wikivec";
+
+// the data source:
 // const std::string source = "sw/small.sw";
 const std::string source = "sw/30k--wikivec.sw";
 // const std::string source = "sw/300k--wikivec.sw";
+
+// only learn patterns that have at least this many kets:
+// set to 1 to learn everything
+// larger this is, the faster the result, but at potential cost of not being able to find similarity for rare pages
+const size_t min_learn_rule_size = 4;
+
+// switch interactive mode on or off:
 // const bool interactive = true;
 const bool interactive = false;
 
@@ -34,8 +45,8 @@ int main(int argc, char* argv[]) {
 
 
     // load the sw file, choosing set or vec version:
-    auto sw_map = load_sw_set(source, op);  // set version
-    // auto sw_map = load_sw_vec(source, op);  // vector version
+    auto sw_map = load_sw_set(source, op, min_learn_rule_size);  // set version
+    // auto sw_map = load_sw_vec(source, op, min_learn_rule_size);  // vector version
 
     // test it loads:
     // print_sw_map(sw_map);
