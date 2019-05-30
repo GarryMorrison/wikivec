@@ -11,7 +11,10 @@
 const std::string op = "wikivec";
 
 // the data source:
-// const std::string source = "sw/small.sw";
+// You can download the source sw files from here:
+// http://semantic-db.org/sw-examples/30k--wikivec.sw
+// http://semantic-db.org/sw-examples/300k--wikivec.sw
+//
 const std::string source = "sw/30k--wikivec.sw";
 // const std::string source = "sw/300k--wikivec.sw";
 
