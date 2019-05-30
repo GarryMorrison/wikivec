@@ -1,9 +1,14 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -O3
+INCS = -Iinclude
 BUILDDIR = build
 OUTDIR = bin
 SRCDIR = src
-OBJS = $(addprefix ${BUILDDIR}/, main.o)
+OBJS = $(addprefix ${BUILDDIR}/, \
+	vectors.o \
+        sets.o \
+	main.o \
+	)
 
 all: directories $(OUTDIR)/wikivec
 
